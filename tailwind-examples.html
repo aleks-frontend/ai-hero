@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailwindCSS Examples</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'custom-blue': '#5865F2',
+                        'custom-blue-dark': '#4752C4',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-900 border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-white">TailwindCSS Examples</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-custom-blue hover:bg-custom-blue-dark text-white px-4 py-2 rounded-lg transition-colors">
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-5xl font-bold text-gray-100 mb-6">
+                Beautiful UI with TailwindCSS
+            </h1>
+            <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+                Build modern, responsive interfaces with utility-first CSS framework
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-custom-blue hover:bg-custom-blue-dark text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                    Get Started
+                </button>
+                <button class="border border-gray-600 text-gray-300 hover:bg-gray-800 px-8 py-3 rounded-lg font-semibold transition-colors">
+                    Learn More
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="py-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-100 mb-12">Component Examples</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: User Profile -->
+                <div class="bg-gray-900 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">JD</span>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-200">John Doe</h3>
+                            <p class="text-gray-400 text-sm">Software Engineer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">
+                        Building amazing user experiences with modern web technologies.
+                    </p>
+                    <div class="flex space-x-2">
+                        <span class="bg-blue-900 text-blue-300 px-2 py-1 rounded text-xs">React</span>
+                        <span class="bg-green-900 text-green-300 px-2 py-1 rounded text-xs">TypeScript</span>
+                        <span class="bg-purple-900 text-purple-300 px-2 py-1 rounded text-xs">Tailwind</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Stats -->
+                <div class="bg-gray-900 rounded-lg p-6 border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-200">Project Stats</h3>
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Tasks Completed</span>
+                            <span class="text-green-400 font-semibold">24/30</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 80%"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Time Remaining</span>
+                            <span class="text-yellow-400 font-semibold">2 days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Form Input -->
+                <div class="bg-gray-900 rounded-lg p-6 border border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">Contact Form</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Email</label>
+                            <input 
+                                type="email" 
+                                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-blue focus:border-transparent"
+                                placeholder="Enter your email"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Message</label>
+                            <textarea 
+                                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-blue focus:border-transparent resize-none"
+                                rows="3"
+                                placeholder="Your message here..."
+                            ></textarea>
+                        </div>
+                        <button class="w-full bg-custom-blue hover:bg-custom-blue-dark text-white py-2 rounded-lg font-semibold transition-colors">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alert Examples -->
+    <section class="py-16 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-100 mb-12">Alert Components</h2>
+            
+            <div class="space-y-4">
+                <!-- Success Alert -->
+                <div class="flex items-center gap-3 rounded-lg bg-green-950 p-4 text-green-300">
+                    <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                    </svg>
+                    <span>Success! Your changes have been saved successfully.</span>
+                </div>
+
+                <!-- Error Alert -->
+                <div class="flex items-center gap-3 rounded-lg bg-red-950 p-4 text-red-300">
+                    <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                    </svg>
+                    <span>Error! Something went wrong. Please try again.</span>
+                </div>
+
+                <!-- Warning Alert -->
+                <div class="flex items-center gap-3 rounded-lg bg-yellow-950 p-4 text-yellow-300">
+                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
+                    </svg>
+                    <span>Warning! Please review your input before proceeding.</span>
+                </div>
+
+                <!-- Info Alert -->
+                <div class="flex items-center gap-3 rounded-lg bg-blue-950 p-4 text-blue-300">
+                    <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                    </svg>
+                    <span>Info: This is an informational message for your reference.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Button Examples -->
+    <section class="py-16 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-100 mb-12">Button Variants</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Primary Button -->
+                <div class="text-center">
+                    <button class="bg-custom-blue hover:bg-custom-blue-dark text-white px-6 py-3 rounded-lg font-semibold transition-colors mb-2">
+                        Primary
+                    </button>
+                    <p class="text-sm text-gray-400">Primary action</p>
+                </div>
+
+                <!-- Secondary Button -->
+                <div class="text-center">
+                    <button class="border border-gray-600 text-gray-300 hover:bg-gray-800 px-6 py-3 rounded-lg font-semibold transition-colors mb-2">
+                        Secondary
+                    </button>
+                    <p class="text-sm text-gray-400">Secondary action</p>
+                </div>
+
+                <!-- Success Button -->
+                <div class="text-center">
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mb-2">
+                        Success
+                    </button>
+                    <p class="text-sm text-gray-400">Positive action</p>
+                </div>
+
+                <!-- Danger Button -->
+                <div class="text-center">
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mb-2">
+                        Danger
+                    </button>
+                    <p class="text-sm text-gray-400">Destructive action</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-700 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">&copy; 2024 TailwindCSS Examples. Built with utility-first CSS.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
