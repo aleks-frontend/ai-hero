@@ -1,5 +1,6 @@
 import ReactMarkdown, { type Components } from "react-markdown";
 import type { Message } from "ai";
+import { Link as LinkIcon } from "lucide-react";
 
 export type MessagePart = NonNullable<
   Message["parts"]
@@ -71,6 +72,32 @@ function ToolInvocationPart({ part }: { part: MessagePart }) {
   );
 }
 
+function Source({ part }: { part: MessagePart }) {
+  if (part.type !== "source") return null;
+  // LanguageModelV1Source: { sourceType, id, url, title, providerMetadata }
+  return (
+    <div className="my-2 rounded bg-blue-950 p-3 text-sm text-blue-200">
+      <div className="mb-1 font-bold">Source:</div>
+      <div className="flex items-center gap-1">
+        <a
+          href={part.source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 underline flex items-center gap-1"
+        >
+          <LinkIcon className="size-4 inline-block align-text-bottom" />
+          {part.source.title || part.source.url}
+        </a>
+      </div>
+      {part.source.providerMetadata && typeof part.source.providerMetadata.provider === "string" && (
+        <div className="text-xs text-blue-300 mt-1">
+          Provider: {part.source.providerMetadata.provider}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export const ChatMessage = ({ parts, role, userName }: ChatMessageProps) => {
   const isAI = role === "assistant";
 
@@ -91,6 +118,9 @@ export const ChatMessage = ({ parts, role, userName }: ChatMessageProps) => {
             }
             if (part.type === "tool-invocation") {
               return <ToolInvocationPart key={idx} part={part} />;
+            }
+            if (part.type === "source") {
+              return <Source key={idx} part={part} />;
             }
             // Encourage the user to hover or inspect for more types
             return null;

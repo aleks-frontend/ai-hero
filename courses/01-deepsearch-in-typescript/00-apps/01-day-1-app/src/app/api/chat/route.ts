@@ -35,29 +35,10 @@ export async function POST(request: Request) {
 3. Always format any URLs or links in your responses using markdown link syntax: [title](url). Do not paste raw URLs; always use markdown formatting for links.
 4. Always display the full cite URL in the markdown link so the user can see the source address.
 `,
-        tools: {
-          searchWeb: {
-            parameters: z.object({
-              query: z.string().describe("The query to search the web for"),
-            }),
-            execute: async ({ query }, { abortSignal }) => {
-              console.log("searchWeb tool called with query:", query);
-              const results = await searchSerper(
-                { q: query, num: 10 },
-                abortSignal,
-              );
-              return results.organic.map((result) => ({
-                title: result.title,
-                link: result.link,
-                snippet: result.snippet,
-              }));
-            },
-          },
-        },
-        maxSteps: 10,
+        // Removed tools and maxSteps, as search grounding is now native
       });
 
-      result.mergeIntoDataStream(dataStream);
+      result.mergeIntoDataStream(dataStream, { sendSources: true });
     },
     onError: (e) => {
       console.error(e);
