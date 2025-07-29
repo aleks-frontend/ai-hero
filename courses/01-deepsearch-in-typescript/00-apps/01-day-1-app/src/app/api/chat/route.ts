@@ -7,6 +7,7 @@ import { model } from "../../../models";
 import { auth } from "../../../server/auth";
 import { searchSerper } from "../../../serper";
 import { z } from "zod";
+import { checkRateLimit, addUserRequest, isUserAdmin } from "../../../server/db/queries";
 
 export const maxDuration = 60;
 
@@ -15,11 +16,41 @@ export async function POST(request: Request) {
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  const userId = session.user.id;
+  
+  // Check if user is admin
+  const isAdmin = await isUserAdmin(userId);
+  
+  // If not admin, check rate limit
+  if (!isAdmin) {
+    const rateLimitCheck = await checkRateLimit(userId);
+    
+    if (!rateLimitCheck.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: "Rate limit exceeded",
+          message: `You have exceeded the daily limit of ${rateLimitCheck.limit} requests. You have made ${rateLimitCheck.currentCount} requests today.`,
+          currentCount: rateLimitCheck.currentCount,
+          limit: rateLimitCheck.limit,
+        }),
+        { 
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+  }
+
   const body = (await request.json()) as {
     messages: Array<Message>;
     language?: string;
   };
-  
+
+  // Record the request in the database
+  await addUserRequest(userId, "/api/chat");
 
   return createDataStreamResponse({
     execute: async (dataStream) => {

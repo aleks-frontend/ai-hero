@@ -3,15 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "~/components/chat-message";
 import { SignInModal } from "~/components/sign-in-modal";
+import { RequestCounter } from "~/components/request-counter";
 import { useChat } from "@ai-sdk/react";
 import { Loader2 } from "lucide-react";
 import { ErrorMessage } from "~/components/error-message";
+import type { Session } from "next-auth";
 
 interface ChatProps {
   userName: string;
+  session: Session | null;
 }
 
-export const ChatPage = ({ userName }: ChatProps) => {
+export const ChatPage = ({ userName, session }: ChatProps) => {
   const [error, setError] = useState<string | null>(null);
   const [showSignIn, setShowSignIn] = useState(false);
   const {
@@ -27,9 +30,21 @@ export const ChatPage = ({ userName }: ChatProps) => {
     async onError(err) {
       
       // Handle Response object (future-proofing)
-      if (err instanceof Response && err.status === 401) {
-        setError("You must be signed in to chat.");
-        setShowSignIn(true);
+      if (err instanceof Response) {
+        if (err.status === 401) {
+          setError("You must be signed in to chat.");
+          setShowSignIn(true);
+        } else if (err.status === 429) {
+          // Handle rate limit error
+          try {
+            const errorData = await err.json();
+            setError(errorData.message || "You have exceeded the daily request limit. Please try again tomorrow.");
+          } catch {
+            setError("You have exceeded the daily request limit. Please try again tomorrow.");
+          }
+        } else {
+          setError("An unexpected error occurred. Please try again.");
+        }
       }
       // Handle Error object with Unauthorized message
       else if (err instanceof Error && err.message === "Unauthorized") {
@@ -41,8 +56,6 @@ export const ChatPage = ({ userName }: ChatProps) => {
     }
   });
 
-  console.log(messages, "messages");  
-
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -53,6 +66,7 @@ export const ChatPage = ({ userName }: ChatProps) => {
 
   return (
     <>
+      <RequestCounter session={session} />
       {error && <ErrorMessage message={error} />}
       <div className="flex flex-1 flex-col">
         <div
