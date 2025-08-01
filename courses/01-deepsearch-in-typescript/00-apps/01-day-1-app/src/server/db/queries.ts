@@ -66,20 +66,15 @@ export async function upsertChat(opts: {
   const existingChat = await db
     .select()
     .from(chats)
-    .where(and(eq(chats.id, chatId), eq(chats.userId, userId)));
+    .where(and(eq(chats.id, chatId)));
 
   if (existingChat.length > 0) {
+    if (existingChat[0]?.userId !== userId) {
+      throw new Error("Chat does not belong to the user");
+    }
+
     // Chat exists, delete all existing messages and replace them
     await db.delete(messages).where(eq(messages.chatId, chatId));
-    
-    // Update the chat title and timestamp
-    await db
-      .update(chats)
-      .set({
-        title,
-        updatedAt: new Date(),
-      })
-      .where(eq(chats.id, chatId));
   } else {
     // Chat doesn't exist, create a new one
     await db.insert(chats).values({
