@@ -2,12 +2,13 @@ import type { Message } from "ai";
 import {
   streamText,
   createDataStreamResponse,
+  appendResponseMessages,
 } from "ai";
 import { model } from "../../../models";
 import { auth } from "../../../server/auth";
 import { searchSerper } from "../../../serper";
 import { z } from "zod";
-import { checkRateLimit, addUserRequest, isUserAdmin } from "../../../server/db/queries";
+import { checkRateLimit, addUserRequest, isUserAdmin, upsertChat } from "../../../server/db/queries";
 
 export const maxDuration = 60;
 
@@ -47,16 +48,32 @@ export async function POST(request: Request) {
   const body = (await request.json()) as {
     messages: Array<Message>;
     language?: string;
+    chatId?: string;
   };
+
+  const { messages, chatId } = body;
 
   // Record the request in the database
   await addUserRequest(userId, "/api/chat");
 
+  // Generate a chat ID if not provided
+  const finalChatId = chatId ?? crypto.randomUUID();
+  
+  // Create a chat title from the first user message
+  const firstUserMessage = messages.find(msg => msg.role === "user");
+  const chatTitle = firstUserMessage?.content?.slice(0, 100) ?? "New Chat";
+
+  // Create the chat immediately with the user's messages
+  // This protects against broken streams
+  await upsertChat({
+    userId,
+    chatId: finalChatId,
+    title: chatTitle,
+    messages,
+  });
+
   return createDataStreamResponse({
     execute: async (dataStream) => {
-      const { messages, language } = body;
-      const lang = language ?? "Serbian";
-
       const result = streamText({
         model,
         messages,
@@ -87,6 +104,27 @@ export async function POST(request: Request) {
           },
         },
         maxSteps: 10,
+        onFinish({ text, finishReason, usage, response }) {
+          const responseMessages = response.messages; // messages that were generated
+
+          const updatedMessages = appendResponseMessages({
+            messages, // from the POST body
+            responseMessages,
+          });
+
+          // Save the updated messages to the database,
+          // by saving over the ENTIRE chat, deleting all
+          // the old messages and replacing them with the
+          // new ones
+          upsertChat({
+            userId,
+            chatId: finalChatId,
+            title: chatTitle,
+            messages: updatedMessages,
+          }).catch((error) => {
+            console.error("Failed to save chat messages:", error);
+          });
+        },
       });
 
       result.mergeIntoDataStream(dataStream);

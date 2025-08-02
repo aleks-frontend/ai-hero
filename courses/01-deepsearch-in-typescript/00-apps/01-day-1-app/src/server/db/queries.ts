@@ -92,7 +92,7 @@ export async function upsertChat(opts: {
       id: message.id,
       chatId,
       role: message.role,
-      parts: message.content,
+      parts: message.parts,
       order: index,
     }));
 
@@ -118,15 +118,15 @@ export async function getChat(chatId: string, userId: string) {
     .where(eq(messages.chatId, chatId))
     .orderBy(messages.order);
 
-  const messagesWithContent = chatMessages.map((msg) => ({
+  const messagesWithParts = chatMessages.map((msg) => ({
     id: msg.id,
     role: msg.role,
-    content: msg.parts,
+    parts: msg.parts,
   }));
 
   return {
     ...chat[0],
-    messages: messagesWithContent,
+    messages: messagesWithParts,
   };
 }
 
