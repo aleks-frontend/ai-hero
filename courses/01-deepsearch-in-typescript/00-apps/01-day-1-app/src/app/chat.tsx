@@ -8,24 +8,29 @@ import { useChat } from "@ai-sdk/react";
 import { Loader2 } from "lucide-react";
 import { ErrorMessage } from "~/components/error-message";
 import type { Session } from "next-auth";
+import { useRouter } from "next/navigation";
+import { isNewChatCreated } from "~/utils";
 
 interface ChatProps {
   userName: string;
   session: Session | null;
+  chatId?: string;
 }
 
-export const ChatPage = ({ userName, session }: ChatProps) => {
+export const ChatPage = ({ userName, session, chatId }: ChatProps) => {
   const [error, setError] = useState<string | null>(null);
   const [showSignIn, setShowSignIn] = useState(false);
+  const router = useRouter();
   const {
     messages,
     input,
     handleInputChange,
     handleSubmit,
     status,
+    data,
   } = useChat({
     body: {
-      language: "Serbian"
+      chatId,
     },
     async onError(err) {
       
@@ -63,6 +68,15 @@ export const ChatPage = ({ userName, session }: ChatProps) => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  // Handle new chat creation redirect
+  useEffect(() => {
+    const lastDataItem = data?.[data.length - 1];
+
+    if (lastDataItem && isNewChatCreated(lastDataItem)) {
+      router.push(`?id=${lastDataItem.chatId}`);
+    }
+  }, [data, router]);
 
   return (
     <>
